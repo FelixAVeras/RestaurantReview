@@ -1,6 +1,6 @@
 <?php
 
-include('./Config/connection.php'); 
+include_once './Config/connection.php'; 
 
 $RestaurantName = '';
 $RestaurantAddress = '';
@@ -46,7 +46,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     	$statemet->close();
     }
 
-    $connection->close();
+    //$connection->close();
 }
 
 ?>
@@ -115,54 +115,35 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		<hr>
 
 		<div class="row mt-2 mb-4">
-			<div class="col-12 col-md-4">
-				<div class="card mb-3">
-				  <div class="row no-gutters">
-				    <div class="col-md-4">
-				      <img src="https://via.placeholder.com/200x390" class="img-fluid" alt="...">
-				    </div>
-				    <div class="col-md-8">
-				      <div class="card-body">
-				        <h5 class="card-title">Card title</h5>
-				        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-				        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-				      </div>
-				    </div>
-				  </div>
-				</div>
-			</div>
-			<div class="col-12 col-md-4">
-				<div class="card mb-3">
-				  <div class="row no-gutters">
-				    <div class="col-md-4">
-				      <img src="https://via.placeholder.com/200x390" class="img-fluid" alt="...">
-				    </div>
-				    <div class="col-md-8">
-				      <div class="card-body">
-				        <h5 class="card-title">Card title</h5>
-				        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-				        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-				      </div>
-				    </div>
-				  </div>
-				</div>
-			</div>
-			<div class="col-12 col-md-4">
-				<div class="card mb-3">
-				  <div class="row no-gutters">
-				    <div class="col-md-4">
-				      <img src="https://via.placeholder.com/200x390" class="img-fluid" alt="...">
-				    </div>
-				    <div class="col-md-8">
-				      <div class="card-body">
-				        <h5 class="card-title">Card title</h5>
-				        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-				        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-				      </div>
-				    </div>
-				  </div>
-				</div>
-			</div>
+			<?php 
+
+			include_once './Config/connection.php';
+
+			$query = "SELECT * FROM restaurant";
+
+			if ($result = $connection->query($query)) {
+				if ($result->num_rows > 0) {
+					while($row = $result->fetch_array()){
+						echo '<div class="col-12 col-md-4">';
+						echo '<div class="card mb-3">';
+				  		echo '<div class="card-body">';
+			        	echo '<h5 class="card-title">'. $row["RestaurantName"] .'</h5>';
+			        	echo '<p class="card-text">'. $row["RestaurantAddress"] .'</p>';
+			      		echo '</div>';
+						echo '</div>';
+						echo '</div>';	
+					}
+
+					$result->free();
+				} else {
+					echo '<h2 class="text-center text-danger">No hay Restaurates por el momento...</h2>';
+				}
+			} else {
+				echo '<h2 class="text-center text-danger">Error Inesperado... Intente mas tarde.</h2>';
+			}
+
+			$connection->close();
+			?>
 		</div>	
 
 	</div>
