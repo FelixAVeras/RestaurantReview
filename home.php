@@ -1,4 +1,55 @@
-<?php include('./Config/connection.php'); ?>
+<?php
+
+include('./Config/connection.php'); 
+
+$RestaurantName = '';
+$RestaurantAddress = '';
+
+$RestaurantName_error = '';
+$RestaurantAddress_error = '';
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+	$input_name = trim($_POST['RestaurantName']);
+
+	if(empty($input_name)) {
+		$RestaurantName_error = 'Please enter a name.';
+	} else {
+		$RestaurantName = $input_name;
+	}
+
+	$input_address = trim($_POST["RestaurantAddress"]);
+    
+    if(empty($input_address)){
+        $RestaurantAddress_error = "Please enter an address.";     
+    } else{
+        $RestaurantAddress = $input_address;
+    }
+
+
+    if (empty($RestaurantName_error) && empty($RestaurantAddress_error)) {
+    	$query = "INSERT INTO restaurant(RestaurantName, RestaurantAddress) VALUES(?,?)";
+
+    	if ($statemet = $connection->prepare($query)) {
+    		$statemet->bind_param('ss', $param_name, $param_address);
+
+    		$param_name = $RestaurantName;
+    		$param_address = $RestaurantAddress;
+
+    		if($statemet->execute()){
+                header("location: home.php");
+                exit();
+            } else{
+                echo "Oops! Algo salio mal, intente de nuevo mas tarde.";
+            }
+    	}
+
+    	$statemet->close();
+    }
+
+    $connection->close();
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -126,13 +177,13 @@
 	        </button>
 	      </div>
 	      <div class="modal-body">
-	        <form action="">
+	        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 	        	<div class="form-group">
 	        		<label for="RestaurantName" class="control-label">Nombre del Local</label>
 	        		<input type="text" class="form-control" name="RestaurantName">
 	        	</div>
 
-	        	<div class="form-group">
+	        	<!-- <div class="form-group">
 	        		<label for="RestaurantCategory" class="control-label">Categoria</label>
 	        		<select name="" id="" class="form-control" name="RestaurantCategory">
 	        			<option value="Carnes">Carnes</option>
@@ -145,7 +196,7 @@
 	        			<option value="Reposteria">Reposteria</option>
 	        			<option value="Pizzerias">Pizzerias</option>
 	        		</select>
-	        	</div>
+	        	</div> -->
 
 	        	<div class="form-group">
 	        		<label for="RestaurantAddress" class="control-label">Direccion</label>
@@ -157,7 +208,7 @@
 					</div>
 	        	</div>
 
-	        	<div class="form-group">
+	        	<!-- <div class="form-group">
 	        		<label for="rating" class="control-label">Calificacion</label>
 	        		<input type="text" class="form-control" name="rating">
 	        	</div>
@@ -165,11 +216,11 @@
 	        	<div class="form-group">
 	        		<label for="comment" class="control-label">Comentario</label>
 	        		<textarea name="" id="" rows="8" class="form-control" name="comment"></textarea>
-	        	</div>
+	        	</div> -->
 
 	        	<div class="modal-footer">
 			        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-			        <button type="button" class="btn btn-primary">Guardar Cambios</button>
+			        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
 			    </div>
 	        </form>
 	      </div>

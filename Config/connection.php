@@ -7,6 +7,6 @@ if ($connection === false) {
 	die($connection->connect_error); 
 }
 
-$connection->close();
+//$connection->close();
 
 ?>
